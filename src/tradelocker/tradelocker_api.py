@@ -1169,6 +1169,8 @@ class TLAPI:
         price: float = 0,
         type_: OrderTypeType = "market",
         validity: Optional[ValidityType] = None,
+        SL: int = 0,
+        TP: int = 0,
         position_netting: bool = False,
         position_id: int = 0,
     ) -> int | str:
@@ -1237,6 +1239,14 @@ class TLAPI:
                 "Unable to place an order with quantity smaller than min lot size of {_MIN_LOT_SIZE}"
             )
             return ""
+        
+        if SL > 0:
+            stopLossType = 'absolute'
+            stopLoss = 300
+        
+        if TP > 0:
+            takeProfitType = 'absolute'
+            takeProfit = 900
 
         request_body: dict[str, str] = {
             "price": str(price),
@@ -1246,6 +1256,10 @@ class TLAPI:
             "validity": validity,
             "tradableInstrumentId": str(instrument_id),
             "type": type_,
+            "stopLoss": stopLoss,
+            "stopLossType": stopLossType,
+            "takeProfit": takeProfit,
+            "takeProfitType": takeProfitType,
         }
 
         if position_id != 0:
