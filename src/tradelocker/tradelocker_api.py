@@ -1169,8 +1169,8 @@ class TLAPI:
         price: float = 0,
         type_: OrderTypeType = "market",
         validity: Optional[ValidityType] = None,
-        SL: int = 0,
-        TP: int = 0,
+        SL: float = 0,
+        TP: float = 0,
         position_netting: bool = False,
         position_id: int = 0,
     ) -> int | str:
