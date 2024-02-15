@@ -1240,14 +1240,6 @@ class TLAPI:
             )
             return ""
         
-        if SL > 0:
-            stopLossType = 'absolute'
-            stopLoss = 300
-        
-        if TP > 0:
-            takeProfitType = 'absolute'
-            takeProfit = 900
-
         request_body: dict[str, str] = {
             "price": str(price),
             "qty": str(quantity),
@@ -1256,12 +1248,16 @@ class TLAPI:
             "validity": validity,
             "tradableInstrumentId": str(instrument_id),
             "type": type_,
-            "stopLoss": stopLoss,
-            "stopLossType": stopLossType,
-            "takeProfit": takeProfit,
-            "takeProfitType": takeProfitType,
         }
 
+        if SL > 0:
+            request_body["stopLossType"] = 'absolute'
+            request_body["stopLoss"] = SL
+        
+        if TP > 0:
+            request_body["takeProfitType"] = 'absolute'
+            request_body["takeProfit"] = TP
+            
         if position_id != 0:
             request_body["positionId"] = position_id
         elif position_netting:
