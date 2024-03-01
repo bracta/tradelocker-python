@@ -1169,8 +1169,9 @@ class TLAPI:
         price: float = 0,
         type_: OrderTypeType = "market",
         validity: Optional[ValidityType] = None,
-        SL: float = 0,
-        TP: float = 0,
+        sl: float = 0,
+        tp: float = 0,
+        sl_type: str = "offset",
         position_netting: bool = False,
         position_id: int = 0,
     ) -> int | str:
@@ -1250,12 +1251,16 @@ class TLAPI:
             "type": type_,
         }
 
-        if SL > 0:
-            request_body["stopLossType"] = 'absolute'
+        if sl != 0:
+            request_body["stopLossType"] = 'offset'
+            
+            if sl_type == 'trStopOffset':
+                request_body["stopLossType"] = 'trStopOffset'
+
             request_body["stopLoss"] = SL
         
-        if TP > 0:
-            request_body["takeProfitType"] = 'absolute'
+        if tp != 0 and sl_type != 'trStopOffset':
+            request_body["takeProfitType"] = 'offset'
             request_body["takeProfit"] = TP
             
         if position_id != 0:
