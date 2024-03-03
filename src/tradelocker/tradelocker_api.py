@@ -87,43 +87,46 @@ class TLAPI:
         account_id: int = 0,
         acc_num: int = 0,
         log_level: LogLevelType = "debug",
+        skip_checks: bool = False
     ) -> None:
         """Initializes the TradeLocker API client."""
         self._base_url: str = f"{environment}/backend-api"
         self._credentials: Optional[CredentialsType] = None
-
         self._access_token: str = ""
         self._refresh_token: str = ""
         self.acc_num: int = 0
         self.account_id: int = 0
         self.environment: str = environment
-
         if username and password and server:
             self._credentials = {
                 "username": username,
                 "password": password,
                 "server": server,
             }
-
         self.log = ColorLogger(__name__, log_level=log_level).get_logger()
-
-        if self._credentials:
-            self._auth_with_password(
-                username=self._credentials["username"],
-                password=self._credentials["password"],
-                server=self._credentials["server"],
-            )
-            self._set_account_id_and_acc_num(account_id, acc_num)
-        elif access_token and refresh_token:
+        
+        if skip_checks:
             self._auth_with_tokens(access_token, refresh_token)
-            self._set_account_id_and_acc_num(account_id, acc_num)
+            self.acc_num = acc_num
+            # Find the account_id for the specified acc_num
+            self.account_id = account_id
+            self.log.debug(
+                f"Logging in using the specified acc_num: {acc_num}, using account_id: {self.account_id}"
+            )
         else:
-            error_msg = f"Either username/pass/server, or access_token/refresh_token must be provided!"
-            raise Exception(error_msg)
-
-    def get_base_url(self) -> str:
-        """Returns the base URL of the API."""
-        return self._base_url
+            if self._credentials:
+                self._auth_with_password(
+                    username=self._credentials["username"],
+                    password=self._credentials["password"],
+                    server=self._credentials["server"],
+                )
+                self._set_account_id_and_acc_num(account_id, acc_num)
+            elif access_token and refresh_token:
+                self._auth_with_tokens(access_token, refresh_token)
+                self._set_account_id_and_acc_num(account_id, acc_num)
+            else:
+                error_msg = f"Either username/pass/server, or access_token/refresh_token must be provided!"
+                raise Exception(error_msg)
 
     ############################## AUTH ROUTES ##########################
 
