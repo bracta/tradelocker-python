@@ -1177,6 +1177,7 @@ class TLAPI:
         sl_type: str = "offset",
         position_netting: bool = False,
         position_id: int = 0,
+        routeId: int = 0
     ) -> int | str:
         """Creates an order.
 
@@ -1247,12 +1248,16 @@ class TLAPI:
         request_body: dict[str, str] = {
             "price": str(price),
             "qty": str(quantity),
-            "routeId": self._get_trade_route_id(instrument_id),
             "side": side,
             "validity": validity,
             "tradableInstrumentId": str(instrument_id),
             "type": type_,
         }
+
+        if routeId > 0:
+            request_body["routeId"] = str(routeId)
+        else:
+            request_body["routeId"] = self._get_trade_route_id(instrument_id)
 
         if sl != 0:
             request_body["stopLossType"] = 'offset'
