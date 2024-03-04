@@ -1265,11 +1265,11 @@ class TLAPI:
             if sl_type == 'trStopOffset':
                 request_body["stopLossType"] = 'trStopOffset'
 
-            request_body["stopLoss"] = SL
+            request_body["stopLoss"] = sl
         
         if tp != 0 and sl_type != 'trStopOffset':
             request_body["takeProfitType"] = 'offset'
-            request_body["takeProfit"] = TP
+            request_body["takeProfit"] = tp
             
         if position_id != 0:
             request_body["positionId"] = position_id
